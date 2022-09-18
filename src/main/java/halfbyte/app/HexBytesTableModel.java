@@ -113,4 +113,8 @@ public class HexBytesTableModel extends AbstractTableModel {
     public boolean isCellEditable(int rowIndex, int columnIndex) {
         return true;
     }
+
+    public byte[] getBytes(){
+        return this.m_bytes;
+    }
 }

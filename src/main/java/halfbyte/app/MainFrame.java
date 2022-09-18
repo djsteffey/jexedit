@@ -13,11 +13,11 @@ public class MainFrame {
     private HexPanel m_hexPanel;
 
     // methods
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         new MainFrame();
     }
 
-    private MainFrame() throws IOException {
+    private MainFrame() {
         // main frame
         this.m_frame = new JFrame("JexEdit");
         this.m_frame.setSize(1280, 720);
@@ -51,6 +51,20 @@ public class MainFrame {
             }
         });
         menuFile.add(menuFileOpen);
+
+        JMenuItem menuFileSave = new JMenuItem("Save");
+        menuFileSave.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    MainFrame.this.onMenuFileSave();
+                }
+                catch (Exception ex){
+                    ex.printStackTrace();
+                }
+            }
+        });
+        menuFile.add(menuFileSave);
 
         JMenuItem menuFileClose = new JMenuItem("Close");
         menuFileClose.addActionListener(new ActionListener() {
@@ -97,6 +111,14 @@ public class MainFrame {
 
     private void onMenuFileClose(){
         this.m_hexPanel.closeFile();
+    }
+
+    private void onMenuFileSave() throws IOException {
+        JFileChooser jfc = new JFileChooser();
+        jfc.setCurrentDirectory(new File(System.getProperty("user.home")));
+        if (jfc.showOpenDialog(this.m_frame) == JFileChooser.APPROVE_OPTION){
+            this.m_hexPanel.saveFile(jfc.getSelectedFile().getAbsolutePath());
+        }
     }
 
     private void onMenuFileExit(){

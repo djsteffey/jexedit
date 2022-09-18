@@ -6,6 +6,8 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -33,12 +35,14 @@ public class HexPanel extends JPanel {
         this.m_addressTable.setShowGrid(false);
         this.m_addressTable.getColumnModel().getColumn(0).setMinWidth(96);
         this.m_addressTable.getColumnModel().getColumn(0).setMaxWidth(96);
+        this.m_addressTable.getTableHeader().setReorderingAllowed(false);
 
         // bytes table
         this.m_bytesTable = new JTable(new HexBytesTableModel(null));
         this.m_bytesTable.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 16));
         this.m_bytesTable.setDefaultRenderer(String.class, new HexBytesTableModel.HexBytesTableCellRenderer());
         this.m_bytesTable.setShowGrid(false);
+        this.m_bytesTable.getTableHeader().setReorderingAllowed(false);
         for (int i = 0; i < 16; ++i){
             this.m_bytesTable.getColumnModel().getColumn(i).setMaxWidth(32);
         }
@@ -58,6 +62,7 @@ public class HexPanel extends JPanel {
         this.m_textTable.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 16));
         this.m_textTable.setDefaultRenderer(char.class, new TextTableModel.TextTableCellRenderer());
         this.m_textTable.setShowGrid(false);
+        this.m_textTable.getTableHeader().setReorderingAllowed(false);
         for (int i = 0; i < 16; ++i){
             this.m_textTable.getColumnModel().getColumn(i).setMaxWidth(16);
         }
@@ -119,5 +124,19 @@ public class HexPanel extends JPanel {
         ((HexBytesTableModel)this.m_bytesTable.getModel()).changeBytes(null);
         ((TextTableModel)this.m_textTable.getModel()).changeBytes(null);
         ((HexAddressTableModel)this.m_addressTable.getModel()).changeNumRows(0);
+    }
+
+    public void saveFile(String filename) throws IOException {
+        // handle to the bytes
+        byte[] bytes = ((HexBytesTableModel)this.m_bytesTable.getModel()).getBytes();
+
+        // open file for writing
+        FileOutputStream os = new FileOutputStream(filename);
+
+        // write all the byte
+        os.write(bytes);
+
+        // close file
+        os.close();
     }
 }
